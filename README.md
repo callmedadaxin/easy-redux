@@ -58,7 +58,7 @@ request
 // and set loading as false when /list/getListSuccess and /list/getListFailed
 // and set error as handleError() when /list/getListFailed
 export const getList = params => dispatch => {
-  dispatch({
+  return dispatch({
     action: '/list/getList',
     url: '/api/getList',
     params,
