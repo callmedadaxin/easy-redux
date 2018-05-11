@@ -10,7 +10,7 @@ simplify redux api
 enhanced combinceReducer which can combince the new type of reducer
 
 ``` js
-import { combinceReducer } from 'easy-redux'
+import { combinceReducer, createStore } from 'easy-redux'
 
 const count = {
   state: 0,
@@ -20,21 +20,51 @@ const count = {
   }
 }
 
-const other = {
-  ...
+const list = {
+  // the state will contains loading, error states automatically
+  fetch: true,
+  state: {
+    list: []
+  },
+  reducers: {
+    getListSuccess: (state, payload) => ({
+      ...state,
+      list: payload
+    })
+  }
 }
 
-export default combinceReducer({
+const reducer = combinceReducer({
   count,
-  other
-}, '/testData')
+  list
+}, '/')
+
+export default createStore(reducer, {}, applyMiddleware(...middlewares))
 ```
 
 ### Actions
 
 ``` js
-export const addDoubleNumber = (dispatch, num) => {
-  dispatch('/testData/add', num * 2)
+export const addDoubleNumber = num => dispatch => {
+  dispatch('/count/add', num * 2)
+}
+```
+
+request
+
+``` js
+// it will auto dispatch /list/getListStart /list/getListSuccess /list/getListFailed
+// and set loading as true when /list/getListStart,
+// and set loading as false when /list/getListSuccess and /list/getListFailed
+// and set error as handleError() when /list/getListFailed
+export const getList = params => dispatch => {
+  dispatch({
+    action: '/list/getList',
+    url: '/api/getList',
+    params,
+    handleResponse: res => res.data.list,
+    handleError: error => error
+  })
 }
 ```
 
@@ -46,7 +76,7 @@ import * as actions from 'actions'
 
 @connect(
   // pick the states you want
-  (state, mapStates) => mapState(state.testData, [
+  (state, mapStates) => mapState(state, [
     'count',
     'other'
   ]),
