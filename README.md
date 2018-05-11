@@ -7,7 +7,7 @@ simplify redux api
 ## Usage
 
 ### Reducer
-enhanced combinceReducer which can be combince the new type of reducer
+enhanced combinceReducer which can combince the new type of reducer
 
 ``` js
 import { combinceReducer } from 'easy-redux'
