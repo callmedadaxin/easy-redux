@@ -1,5 +1,4 @@
-export const addDoubleNum = num => {
-  return dispatch => {
-    dispatch('/counts/count/add', num * 2)
-  }
+export const addDoubleNum = num => dispatch => {
+  dispatch('/counts/count/add', num * 2)
+  dispatch('/list/addItem', num * 2)
 }

@@ -44,7 +44,6 @@ export const combinceReducer = (reducers, namespace) => {
     reducerNames.forEach(function (name) {
       const reduce = reducers[name]
       const childNamespace = namespace === '/' ? `/${name}` : `${namespace}/${name}`
-      console.log(childNamespace)
       if (typeof reduce === 'function') {
         reducerMap[name] = reduce(childNamespace)
       } else {
