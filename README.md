@@ -1,10 +1,15 @@
 # Easy-redux
-simplify redux api
+基于redux,react-redux 简化redux api
 
-## Usage
+同时针对异步请求redux进行了优化
+
+## 使用
 
 ### Reducer
-enhanced combinceReducer which can combince the new type of reducer
+去掉繁琐的actions, 将复杂的switch语句进行拆分，简化之前的reducer。
+
+使用增强的combinceReducer来对新的reducer格式进行合并，会在内部自动进行转化，
+将每个reducer变为标准的redux格式，并将对应的action以`/namespace/action`的方式进行记录。
 
 ``` js
 import { combinceReducer, createStore } from 'easy-redux'
@@ -18,10 +23,10 @@ const count = {
 }
 
 const list = {
-  // the state will contains loading, error states automatically
-  // and change loading as true when start getting list with dispatching `/list/${fetch}
-  // change loading as false when succeed or failed
-  // with dispatching `/list/${fetch}Success` and `/list/${fetch}Failed`
+  // 添加fetch字段后，会自动为该reducer注入loading,error字段
+  // reducers中会自动包含`${fetch}`、`${fetch}Success`和`${fetch}Failed`方法
+  // 并在其中自动进行处理，为loading和error状态赋值
+  // 你也可以在其中书写同名函数，在对应状态触发，此时其已包含正确的loading和error状态
   fetch: 'getList',
   state: {
     list: []
@@ -34,29 +39,44 @@ const list = {
   }
 }
 
+// 记得将最外层的reducer加上命名空间。
+// 对应各个reducer的action会对应到 `/list/getList`
 const reducer = combinceReducer({
   count,
   list
 }, '/')
 
-export default createStore(reducer, {}, applyMiddleware(...middlewares))
+export default createStore(reducer, {}, middlewares)
 ```
 
 ### Actions
+简化action和action创建函数，避免频繁的import action等。
+
+通过之前设置的命名空间来保重各action的唯一性
+
+``` js
+export const addDoubleNumber = num => (dispatch, getState) => dispatch('/count/add', num * 2)
+```
+
+#### 异步action
+内部引用了redux-thunk, 可直接使用
 
 ``` js
 export const addDoubleNumber = num => dispatch => {
-  dispatch('/count/add', num * 2)
+  setTimeout(() => {
+    dispatch('/count/add', num * 2)
+  }, 1000)
 }
 ```
 
-request
+#### request
+针对之前定义了fetch字段的reducer，可直接dispatch一个action对象,
+
+dispatch后，会自动进行请求并处理，并将整个aciton分为三个action,并在请求过程中自动触发：
+
+action, `${action}/success`, `${action/failed}`
 
 ``` js
-// it will auto dispatch /list/getListStart /list/getListSuccess /list/getListFailed
-// and set loading as true when /list/getListStart,
-// and set loading as false when /list/getListSuccess and /list/getListFailed
-// and set error as handleError() when /list/getListFailed
 export const getList = params => dispatch => {
   return dispatch({
     action: '/list/getList',
@@ -70,6 +90,7 @@ export const getList = params => dispatch => {
 ```
 
 ### Container
+增强了之前的connect函数，可以直接在对象中择取对于属性
 
 ``` js
 import { connect } from 'easy-redux'
@@ -90,3 +111,8 @@ export default class Counter extends Component {
   ...
 }
 ```
+
+## TOTO
+- hot reload
+- 优化action处理，转为middleware
+- 性能调优
