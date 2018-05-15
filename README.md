@@ -1,7 +1,7 @@
 # Easy-redux
 基于redux,react-redux 简化redux api
 
-同时针对异步请求redux进行了优化
+同时针对异步请求redux进行了优化，类似[react-fetch-middleware](https://github.com/callmedadaxin/react-fetch-middleware)
 
 ## 使用
 
