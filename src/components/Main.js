@@ -35,7 +35,7 @@ class AppComponent extends React.Component {
               ? String(error)
               : <ul>
                 {
-                  listData.list.map(item => (<li>{item}</li>))
+                  list.map(item => (<li>{item}</li>))
                 }
               </ul>
         }
