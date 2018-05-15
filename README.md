@@ -1,9 +1,6 @@
 # Easy-redux
 simplify redux api
 
-## Why
-
-
 ## Usage
 
 ### Reducer
@@ -22,7 +19,10 @@ const count = {
 
 const list = {
   // the state will contains loading, error states automatically
-  fetch: true,
+  // and change loading as true when start getting list with dispatching `/list/${fetch}
+  // change loading as false when succeed or failed
+  // with dispatching `/list/${fetch}Success` and `/list/${fetch}Failed`
+  fetch: 'getList',
   state: {
     list: []
   },
@@ -63,7 +63,8 @@ export const getList = params => dispatch => {
     url: '/api/getList',
     params,
     handleResponse: res => res.data.list,
-    handleError: error => error
+    handleError: error => error,
+    fetchMethod: (url, params) => yourOwnMethods(url, params)
   })
 }
 ```
