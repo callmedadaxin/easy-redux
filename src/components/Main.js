@@ -16,10 +16,10 @@ class AppComponent extends React.Component {
     this.props.addDoubleNum(1)
   }
   render() {
-    const { count } = this.props
+    console.log(this.props)
     return (
       <div className="index">
-        <span>count: {count}</span>
+        {/* <span>count: {count}</span> */}
         <button onClick={this.addDouble.bind(this)}>add</button>
       </div>
     );
