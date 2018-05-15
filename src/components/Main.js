@@ -9,24 +9,36 @@ import * as actions from '../actions'
     count: state.counts.count
   }),
   (dispatch, mapActions) => mapActions(actions, [
-    'addDoubleNum'
+    'addDoubleNum',
+    'fetchList'
   ])
 )
 class AppComponent extends React.Component {
+  componentWillMount = () => {
+    this.props.fetchList()
+  }
+  
   addDouble () {
     this.props.addDoubleNum(1)
   }
   render() {
     const { list: listData, count } = this.props
+    const { loading, list, error } = listData
     return (
       <div className="index">
         <span>count: {count}</span>
         <button onClick={this.addDouble.bind(this)}>add</button>
-        <ul>
-          {
-            listData.list.map(item => (<li>{item}</li>))
-          }
-        </ul>
+        {
+          loading
+            ? 'loading...'
+            : error
+              ? String(error)
+              : <ul>
+                {
+                  listData.list.map(item => (<li>{item}</li>))
+                }
+              </ul>
+        }
       </div>
     );
   }

@@ -1,4 +1,5 @@
 import Namespace from './spaceStore'
+import { isObj } from './util'
 /**
  * action转化
  * 格式 count => dispatch => dispatch('/count/add', count)
@@ -8,6 +9,32 @@ import Namespace from './spaceStore'
  */
 const initAction = action => params => (dispatch, getstate) => {
   const retDispatch = (namespace, payload) => {
+    // 处理异步情况
+    if (isObj(namespace)) {
+      const { url, params, action, handleResult, handleError, fetchMethod } = namespace
+      dispatch({
+        type: Namespace.get(action),
+        payload: params
+      })
+      return fetchMethod(url, params)
+        .then(res => res.json())
+        .then(json => {
+          const ret = handleResult(json)
+          dispatch({
+            type: Namespace.get(`${action}Success`),
+            payload: ret
+          })
+          return ret
+        })
+        .catch(error => {
+          const err = handleError(error)
+          dispatch({
+            type: Namespace.get(`${action}Failed`),
+            payload: err
+          })
+          return err
+        })
+    }
     return dispatch({
       type: Namespace.get(namespace),
       payload
@@ -26,3 +53,4 @@ export const splitAndInitActions = (actions, keys) => {
     return retActions
   }, {})
 }
+

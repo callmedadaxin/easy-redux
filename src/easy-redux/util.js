@@ -5,3 +5,4 @@ export const splitObject = (obj, keys) => {
   })
   return ret
 }
+export const isObj = obj => String(obj) === '[object Object]'

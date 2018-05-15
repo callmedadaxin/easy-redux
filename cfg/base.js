@@ -25,7 +25,15 @@ module.exports = {
     hot: true,
     port: defaultSettings.port,
     publicPath: defaultSettings.publicPath,
-    noInfo: false
+    noInfo: false,
+    before(app) {
+      app.post('api/getList', function (req, res) {
+        res.json({
+          code: 200,
+          data: [1, 2, 3, 4, 5]
+        })
+      })
+    }
   },
   resolve: {
     extensions: ['', '.js', '.jsx'],

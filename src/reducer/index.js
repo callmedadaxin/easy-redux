@@ -19,6 +19,7 @@ const counts = combinceReducer({
 })
 
 const list = {
+  fetch: 'getList',
   state: {
     list: []
   },
@@ -26,6 +27,12 @@ const list = {
     addItem (state, item) {
       const list = state.list.slice(0)
       list.push(item)
+      return {
+        ...state,
+        list
+      }
+    },
+    fetchListSuccess (state, list) {
       return {
         ...state,
         list
