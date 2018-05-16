@@ -1,5 +1,8 @@
 import Namespace from './spaceStore'
 import { isObj } from './util'
+import { centralRequest } from './index'
+
+const { fn: request, handleResponse, handleError: handleCentralError } = centralRequest
 /**
  * action转化
  * 格式 count => dispatch => dispatch('/count/add', count)
@@ -11,13 +14,14 @@ const initAction = action => params => (dispatch, getstate) => {
   const retDispatch = (namespace, payload) => {
     // 处理异步情况
     if (isObj(namespace)) {
-      const { url, params, action, handleResult, handleError, fetchMethod } = namespace
+      const { url, params, action, handleResult, handleError } = namespace
       dispatch({
         type: Namespace.get(action),
         payload: params
       })
-      return fetchMethod(url, params)
-        .then(res => res.json())
+      return request(url, params)
+        .then(handleResponse)
+        .catch(handleCentralError)
         .then(json => {
           const ret = handleResult(json)
           dispatch({
