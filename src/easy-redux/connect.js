@@ -36,3 +36,13 @@ export const createStore = (appReducer, inititalState, middlewares = []) => {
 
   return reduxCreateStore(appReducer, inititalState, applyMiddleware(...retMiddlewares))
 }
+
+// export const hotReload = (store, path) => {
+//   if (module.hot) {
+//     module.hot.accept('../reducer', () => {
+//       // We need to require for hot reloadign to work properly.
+//       const nextReducer = require('../reducer') // eslint-disable-line global-require
+//       store.replaceReducer(nextReducer)
+//     });
+//   }
+// }

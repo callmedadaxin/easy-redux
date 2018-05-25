@@ -15,9 +15,8 @@ const handleFetchReducers = (reducersConfig) => {
   const FETCH_FAILED = `${fetch}Failed`
 
   if (!isObj(inititalState)) {
-    throw('对于fetch类型reducer, state必须是一个对象！')
+    throw ('对于fetch类型reducer, state必须是一个对象！')
   }
-
   // 自动注入loading, error状态，并进行处理
   const retReducers = {
     ...reducers,
@@ -65,7 +64,7 @@ export const initReducers = (reducersConfig, namespace) => {
   // 优先添加fetch处理
   const config = handleFetchReducers(reducersConfig)
   const { state: inititalState, reducers } = config
-  
+
   const actionNames = Object.keys(reducers)
 
   const resultActions = actionNames.map(action => {
@@ -81,7 +80,7 @@ export const initReducers = (reducersConfig, namespace) => {
 
   return (state = inititalState, action) => {
     // 异步请求action处理
-    
+
     const actionFn = resultActions.find(cur => cur.name === action.type)
     if (actionFn) {
       return actionFn.fn && actionFn.fn(state, action.payload)

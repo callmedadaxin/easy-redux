@@ -1,7 +1,7 @@
 import { combinceReducer } from '../easy-redux'
 
 const count = {
-  state: 1,
+  state: 5,
   reducers: {
     add: (state, payload) => state + payload
   }

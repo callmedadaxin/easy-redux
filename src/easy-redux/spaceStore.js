@@ -3,14 +3,14 @@ export default {
   set(key, value) {
     this.namespaces[key] = value
   },
-  setActionByNamespace (namespace) {
+  setActionByNamespace(namespace) {
     const action = this.toAction(namespace)
     this.namespaces[namespace] = action
   },
-  get (key) {
+  get(key) {
     return this.namespaces[key]
   },
-  toAction (namespace) {
+  toAction(namespace) {
     let ret = namespace
     if (namespace.indexOf('/') === 0) {
       ret = namespace.slice(1)

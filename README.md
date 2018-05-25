@@ -4,6 +4,7 @@
 同时针对异步请求redux进行了优化，类似[react-fetch-middleware](https://github.com/callmedadaxin/react-fetch-middleware)
 
 ## 使用
+目前并没有发布到NPM，会等到版本稳定运营于生产环境后进行publish, 源码可于src/easy-redux中查看。
 
 ### Reducer
 去掉繁琐的actions, 将复杂的switch语句进行拆分，简化之前的reducer。
