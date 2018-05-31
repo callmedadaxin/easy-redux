@@ -28,7 +28,7 @@ const list = {
   // reducers中会自动包含`${fetch}`、`${fetch}Success`和`${fetch}Failed`方法
   // 并在其中自动进行处理，为loading和error状态赋值
   // 你也可以在其中书写同名函数，在对应状态触发，此时其已包含正确的loading和error状态
-  fetch: 'getList',
+  fetch: 'getList', // 多个时，用数组 ['getList','other']
   state: {
     list: []
   },
@@ -83,9 +83,9 @@ export const getList = params => dispatch => {
     action: '/list/getList',
     url: '/api/getList',
     params,
-    handleResponse: res => res.data.list,
+    handleResult: res => res.data.list,
     handleError: error => error,
-    fetchMethod: (url, params) => yourOwnMethods(url, params)
+    requestFn: fetch // 可以针对这个请求设置特殊的请求，默认为centralRequest
   })
 }
 ```

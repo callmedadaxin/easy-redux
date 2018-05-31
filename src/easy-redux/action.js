@@ -9,17 +9,18 @@ import { centralRequest } from './request'
  * 目标格式, 将对应函数中每个dispatch的格式都进行转化
  * count => ({ type: 'count_add', payload: count })
  */
-const initAction = action => params => (dispatch, getstate) => {
+export const initAction = action => (...fnParams) => (dispatch, getstate) => {
   const { fn: request, handleResponse, handleError: handleCentralError } = centralRequest.get()
   const retDispatch = (namespace, payload) => {
     // 处理异步情况
     if (isObj(namespace)) {
-      const { url, params, action, handleResult = res => res, handleError = error => error } = namespace
+      const { url, params = {}, requestFn, action, handleResult = res => res, handleError = error => error, upload } = namespace
       dispatch({
         type: Namespace.get(action),
         payload: params
       })
-      return request(url, params)
+      const fn = requestFn || request
+      return fn(url, params, upload)
         .then(handleResponse)
         .catch(handleCentralError)
         .then(json => {
@@ -44,7 +45,7 @@ const initAction = action => params => (dispatch, getstate) => {
       payload
     })
   }
-  return action(params)(retDispatch, getstate)
+  return action(...fnParams)(retDispatch, getstate)
 }
 /**
  * 将action拆分转化

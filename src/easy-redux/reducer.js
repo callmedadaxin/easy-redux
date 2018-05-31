@@ -2,15 +2,7 @@ import { combineReducers as reduxCombinceReducer } from 'redux'
 import Namespace from './spaceStore'
 import { isObj } from './util'
 
-/**
- * 处理支持异步的reducer, 根据fetch字段进行处理
- * 自动添加loading,error状态
- * 并针对fetch,fetchSuccess,fetchFailed进行更改
- */
-const handleFetchReducers = (reducersConfig) => {
-  if (!reducersConfig.fetch) return reducersConfig
-
-  const { state: inititalState, reducers, fetch } = reducersConfig
+const getFetchRuducers = inititalState => (reducers, fetch) => {
   const FETCH_SUCCESS = `${fetch}Success`
   const FETCH_FAILED = `${fetch}Failed`
 
@@ -18,7 +10,7 @@ const handleFetchReducers = (reducersConfig) => {
     throw ('对于fetch类型reducer, state必须是一个对象！')
   }
   // 自动注入loading, error状态，并进行处理
-  const retReducers = {
+  return {
     ...reducers,
     [fetch]: (state, payload) => {
       const ret = {
@@ -43,6 +35,23 @@ const handleFetchReducers = (reducersConfig) => {
       }
       return reducers[FETCH_FAILED] ? reducers[FETCH_FAILED](ret, error) : ret
     }
+  }
+}
+/**
+ * 处理支持异步的reducer, 根据fetch字段进行处理
+ * 自动添加loading,error状态
+ * 并针对fetch,fetchSuccess,fetchFailed进行更改
+ */
+const handleFetchReducers = (reducersConfig) => {
+  if (!reducersConfig.fetch) return reducersConfig
+
+  const { state: inititalState, reducers, fetch } = reducersConfig
+  let retReducers = {}
+
+  if (Array.isArray(fetch)) {
+    retReducers = fetch.reduce(getFetchRuducers(inititalState), reducers)
+  } else {
+    retReducers = getFetchRuducers(inititalState)(reducers, fetch)
   }
 
   return {
